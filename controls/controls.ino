@@ -3,8 +3,8 @@ const int IN2 = 3;  // L298N input 2
 const int IN3 = 4;  // L298N input 3
 const int IN4 = 5;  // L298N input 4
 
-enum Direction { DIR_STOP, DIR_FWD, DIR_REV };
-Direction currentDir = DIR_STOP;
+enum Direction { DIR_STOP, DIR_FWD, DIR_REV }; // Current state of droid
+Direction currentDir = DIR_STOP;               // Begins motionless
 
 void setup() {
   Serial.begin(9600);
@@ -28,7 +28,7 @@ void loop() {
     String cmd = Serial.readStringUntil('\n');
     cmd.trim();
     cmd.toUpperCase();
-
+    // Manual pin commands sidestep state setup, BE AWARE
     if      (cmd == "2 HIGH") { digitalWrite(IN1, HIGH); Serial.println("Pin 2 HIGH"); }
     else if (cmd == "2 LOW")  { digitalWrite(IN1, LOW);  Serial.println("Pin 2 LOW");  }
     else if (cmd == "3 HIGH") { digitalWrite(IN2, HIGH); Serial.println("Pin 3 HIGH"); }
@@ -56,6 +56,10 @@ void STOP(){
 }
 
 void FWD(){
+  if (currentDir == DIR_FWD) {
+    Serial.println("Already FWD");
+    return;
+  }
   if (currentDir == DIR_REV) {
     STOP();
     delay(200);
@@ -67,6 +71,10 @@ void FWD(){
 }
 
 void REV(){
+  if (currentDir == DIR_REV) {
+    Serial.println("Already REV");
+    return;
+  }
   if (currentDir == DIR_FWD) {
     STOP();
     delay(200);
