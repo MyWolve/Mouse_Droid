@@ -3,6 +3,9 @@ const int IN2 = 3;  // L298N input 2
 const int IN3 = 4;  // L298N input 3
 const int IN4 = 5;  // L298N input 4
 
+enum Direction { DIR_STOP, DIR_FWD, DIR_REV }
+Direction currentDir = DIR_STOP;
+
 void setup() {
   Serial.begin(9600);
   pinMode(IN1, OUTPUT);
@@ -53,19 +56,23 @@ void STOP(){
 }
 
 void FWD(){
-  // Set wheels to LOW position (RESET)
-  STOP();
-  delay(300);
+  if (currentDir == DIR_REV) {
+    STOP();
+    delay(200);
+  }
   // Set wheels to FWD
   digitalWrite(IN1, HIGH);
   digitalWrite(IN3, HIGH);
+  currentDir = DIR_FWD;
 }
 
 void REV(){
-  // Set wheels to LOW position (RESET)
-  STOP();
-  delay(300);
+  if (currentDir == DIR_FWD) {
+    STOP();
+    delay(200);
+  }
   // Set wheels to REV
   digitalWrite(IN2, HIGH);
   digitalWrite(IN4, HIGH);
+  currentDir = DIR_REV;
 }
