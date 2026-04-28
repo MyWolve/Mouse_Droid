@@ -3,7 +3,7 @@ const int IN2 = 3;  // L298N input 2
 const int IN3 = 4;  // L298N input 3
 const int IN4 = 5;  // L298N input 4
 
-enum Direction { DIR_STOP, DIR_FWD, DIR_REV }
+enum Direction { DIR_STOP, DIR_FWD, DIR_REV };
 Direction currentDir = DIR_STOP;
 
 void setup() {
