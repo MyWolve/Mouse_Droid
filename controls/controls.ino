@@ -33,7 +33,6 @@ void setup() {
   digitalWrite(IND, LOW);
   Serial.println("Ready. Commands: '2 HIGH', '2 LOW', '4 HIGH', '4 LOW', ... 'STOP'");
 }
-
 void loop() {
   if (Serial.available() > 0) {
     String cmd = Serial.readStringUntil('\n');
@@ -68,16 +67,19 @@ void loop() {
 }
 
 void STOP(){
-  // Set wheels to LOW position
-  digitalWrite(IN1, LOW);
-  digitalWrite(IN2, LOW);
-  digitalWrite(IN3, LOW);
-  digitalWrite(IN4, LOW);
-  digitalWrite(INA, LOW);
-  digitalWrite(INB, LOW);
-  digitalWrite(INC, LOW);
-  digitalWrite(IND, LOW);
-}
+    // Set currentDir to STOP
+    currentDir = DIR_STOP;
+    // Set wheels to LOW position
+    digitalWrite(IN1, LOW);
+    digitalWrite(IN2, LOW);
+    digitalWrite(IN3, LOW);
+    digitalWrite(IN4, LOW);
+    digitalWrite(INA, LOW);
+    digitalWrite(INB, LOW);
+    digitalWrite(INC, LOW);
+    digitalWrite(IND, LOW);
+  }
+  
 
 void FWD(){
   if (currentDir == DIR_FWD) {
@@ -87,14 +89,23 @@ void FWD(){
   if (currentDir == DIR_REV) {
     STOP();
     delay(200);
+    // Set wheels to FWD
+    digitalWrite(IN1, HIGH);
+    //delay(50);// TEMPORARY: REMOVE AFTER TESTING
+    digitalWrite(IN3, HIGH);
+    //delay(50);// TEMPORARY: REMOVE AFTER TESTING
+    digitalWrite(INA, HIGH);
+    //delay(50);// TEMPORARY: REMOVE AFTER TESTING
+    digitalWrite(INC, HIGH);
+    currentDir = DIR_FWD;
   }
   // Set wheels to FWD
   digitalWrite(IN1, HIGH);
-  delay(50);// TEMPORARY: REMOVE AFTER TESTING
+  //delay(50);// TEMPORARY: REMOVE AFTER TESTING
   digitalWrite(IN3, HIGH);
-  delay(50);// TEMPORARY: REMOVE AFTER TESTING
+  //delay(50);// TEMPORARY: REMOVE AFTER TESTING
   digitalWrite(INA, HIGH);
-  delay(50);// TEMPORARY: REMOVE AFTER TESTING
+  //delay(50);// TEMPORARY: REMOVE AFTER TESTING
   digitalWrite(INC, HIGH);
   currentDir = DIR_FWD;
 }
@@ -107,14 +118,23 @@ void REV(){
   if (currentDir == DIR_FWD) {
     STOP();
     delay(200);
+    // Set wheels to REV
+    digitalWrite(IN2, HIGH);
+    //delay(50); // TEMPORARY: REMOVE AFTER TESTING
+    digitalWrite(IN4, HIGH);
+    //delay(50); // TEMPORARY: REMOVE AFTER TESTING
+    digitalWrite(INB, HIGH);
+    //delay(50);// TEMPORARY: REMOVE AFTER TESTING
+    digitalWrite(IND, HIGH);
+    currentDir = DIR_REV;
   }
   // Set wheels to REV
   digitalWrite(IN2, HIGH);
-  delay(50); // TEMPORARY: REMOVE AFTER TESTING
+  //delay(50); // TEMPORARY: REMOVE AFTER TESTING
   digitalWrite(IN4, HIGH);
-  delay(50); // TEMPORARY: REMOVE AFTER TESTING
+  //delay(50); // TEMPORARY: REMOVE AFTER TESTING
   digitalWrite(INB, HIGH);
-  delay(50);// TEMPORARY: REMOVE AFTER TESTING
+  //delay(50);// TEMPORARY: REMOVE AFTER TESTING
   digitalWrite(IND, HIGH);
   currentDir = DIR_REV;
 }
