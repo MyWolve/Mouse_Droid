@@ -78,15 +78,18 @@ void loop() {
     else if (cmd == "10 LOW") { digitalWrite(R_IN3, LOW);  Serial.println("Pin 10 LOW");  }
     else if (cmd == "11 HIGH"){ digitalWrite(R_IN4, HIGH);  Serial.println("Pin 11 HIGH");}
     else if (cmd == "11 LOW") { digitalWrite(R_IN4, LOW);  Serial.println("Pin 11 LOW");  }
-    
-    else if (cmd == "FWD")    { FWD(); Serial.println("Pin 2,4,8,10 HIGH"); }
-    else if (cmd == "REV")    { REV(); Serial.println("Pin 3,5,9,11 HIGH"); }
+
+    // Regular commands begin
+    else if (cmd == "FWD")    { FWD(); Serial.println("Pin 2,4,7,8 HIGH"); }
+    else if (cmd == "REV")    { REV(); Serial.println("Pin 12,13,A0,A1 HIGH"); }
     else if (cmd.startsWith("SPEED ")) {
       int newSpeed = cmd.substring(6).toInt();
-      newSpeed = constrain(newSpeed, 0, 255); // Motors don't actually work between [0,255], it's more like [100,255]. This is due to the motors not being able to interpret switches in voltage above a certain frequency
+      // Motors don't actually work between [0,255], it's more like [100,255]. This is due to the motors not being able to interpret switches in voltage above a certain frequency. Will specify later. 
+      newSpeed = constrain(newSpeed, 0, 255); 
       currentSpeed = newSpeed;
       Serial.print("Speed set to "); Serial.println(currentSpeed);
-      applySpeed(); // Apply newSpeed
+      // Apply newSpeed
+      applySpeed(); 
       }
     else if (cmd == "STOP")   {
       STOP();
@@ -97,47 +100,43 @@ void loop() {
 }
 
 void STOP(){
-    // Set currentDir to STOP
-    currentDir = DIR_STOP;
-    // Set wheels to LOW position
-    digitalWrite(F_IN1, LOW);
-    digitalWrite(F_IN2, LOW);
-    digitalWrite(F_IN3, LOW);
-    digitalWrite(F_IN4, LOW);
-    digitalWrite(R_IN1, LOW);
-    digitalWrite(R_IN2, LOW);
-    digitalWrite(R_IN3, LOW);
-    digitalWrite(R_IN4, LOW);
+  // Set currentDir to STOP
+  currentDir = DIR_STOP;
+  // Set wheels to LOW position
+  digitalWrite(F_IN1, LOW);
+  digitalWrite(F_IN2, LOW);
+  digitalWrite(F_IN3, LOW);
+  digitalWrite(F_IN4, LOW);
+  digitalWrite(R_IN1, LOW);
+  digitalWrite(R_IN2, LOW);
+  digitalWrite(R_IN3, LOW);
+  digitalWrite(R_IN4, LOW);
+  return;
   }
   
-
 void FWD(){
   if (currentDir == DIR_FWD) {
     Serial.println("Already FWD");
     return;
   }
-  if (currentDir == DIR_REV) {
+  else if (currentDir == DIR_REV) {
     STOP();
     delay(200);
+    currentDir = DIR_FWD;
     // Set wheels to FWD
     digitalWrite(F_IN1, HIGH);
-    //delay(50);// TEMPORARY: REMOVE AFTER TESTING
     digitalWrite(F_IN3, HIGH);
-    //delay(50);// TEMPORARY: REMOVE AFTER TESTING
     digitalWrite(R_IN1, HIGH);
-    //delay(50);// TEMPORARY: REMOVE AFTER TESTING
     digitalWrite(R_IN3, HIGH);
-    currentDir = DIR_FWD;
+    return;
   }
+  currentDir = DIR_FWD;
   // Set wheels to FWD
   digitalWrite(F_IN1, HIGH);
-  //delay(50);// TEMPORARY: REMOVE AFTER TESTING
   digitalWrite(F_IN3, HIGH);
-  //delay(50);// TEMPORARY: REMOVE AFTER TESTING
   digitalWrite(R_IN1, HIGH);
-  //delay(50);// TEMPORARY: REMOVE AFTER TESTING
   digitalWrite(R_IN3, HIGH);
-  currentDir = DIR_FWD;
+  return;
 }
 
 void REV(){
@@ -145,28 +144,24 @@ void REV(){
     Serial.println("Already REV");
     return;
   }
-  if (currentDir == DIR_FWD) {
+  else if (currentDir == DIR_FWD) {
     STOP();
     delay(200);
+    currentDir = DIR_REV;
     // Set wheels to REV
     digitalWrite(F_IN2, HIGH);
-    //delay(50); // TEMPORARY: REMOVE AFTER TESTING
     digitalWrite(F_IN4, HIGH);
-    //delay(50); // TEMPORARY: REMOVE AFTER TESTING
     digitalWrite(R_IN2, HIGH);
-    //delay(50);// TEMPORARY: REMOVE AFTER TESTING
     digitalWrite(R_IN4, HIGH);
-    currentDir = DIR_REV;
+    return;
   }
+  currentDir = DIR_REV;
   // Set wheels to REV
   digitalWrite(F_IN2, HIGH);
-  //delay(50); // TEMPORARY: REMOVE AFTER TESTING
   digitalWrite(F_IN4, HIGH);
-  //delay(50); // TEMPORARY: REMOVE AFTER TESTING
   digitalWrite(R_IN2, HIGH);
-  //delay(50);// TEMPORARY: REMOVE AFTER TESTING
   digitalWrite(R_IN4, HIGH);
-  currentDir = DIR_REV;
+  return;
 }
 
 void applySpeed(){
@@ -174,4 +169,5 @@ void applySpeed(){
   analogWrite(F_ENB, currentSpeed);
   analogWrite(R_ENA, currentSpeed);
   analogWrite(R_ENB, currentSpeed);
+  return;
 }
