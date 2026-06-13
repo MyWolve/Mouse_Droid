@@ -121,21 +121,15 @@ void FWD(){
     delay(200);
     // Set wheels to FWD
     digitalWrite(F_IN1, HIGH);
-    //delay(50);// TEMPORARY: REMOVE AFTER TESTING
-    digitalWrite(F_IN3, HIGH);
-    //delay(50);// TEMPORARY: REMOVE AFTER TESTING
+    digitalWrite(F_IN4, HIGH);
     digitalWrite(R_IN1, HIGH);
-    //delay(50);// TEMPORARY: REMOVE AFTER TESTING
     digitalWrite(R_IN3, HIGH);
     currentDir = DIR_FWD;
   }
   // Set wheels to FWD
   digitalWrite(F_IN1, HIGH);
-  //delay(50);// TEMPORARY: REMOVE AFTER TESTING
-  digitalWrite(F_IN3, HIGH);
-  //delay(50);// TEMPORARY: REMOVE AFTER TESTING
+  digitalWrite(F_IN4, HIGH);
   digitalWrite(R_IN1, HIGH);
-  //delay(50);// TEMPORARY: REMOVE AFTER TESTING
   digitalWrite(R_IN3, HIGH);
   currentDir = DIR_FWD;
 }
@@ -150,21 +144,15 @@ void REV(){
     delay(200);
     // Set wheels to REV
     digitalWrite(F_IN2, HIGH);
-    //delay(50); // TEMPORARY: REMOVE AFTER TESTING
     digitalWrite(F_IN4, HIGH);
-    //delay(50); // TEMPORARY: REMOVE AFTER TESTING
     digitalWrite(R_IN2, HIGH);
-    //delay(50);// TEMPORARY: REMOVE AFTER TESTING
     digitalWrite(R_IN4, HIGH);
     currentDir = DIR_REV;
   }
   // Set wheels to REV
   digitalWrite(F_IN2, HIGH);
-  //delay(50); // TEMPORARY: REMOVE AFTER TESTING
-  digitalWrite(F_IN4, HIGH);
-  //delay(50); // TEMPORARY: REMOVE AFTER TESTING
+  digitalWrite(F_IN3, HIGH);
   digitalWrite(R_IN2, HIGH);
-  //delay(50);// TEMPORARY: REMOVE AFTER TESTING
   digitalWrite(R_IN4, HIGH);
   currentDir = DIR_REV;
 }
