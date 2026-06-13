@@ -84,7 +84,12 @@ void loop() {
     else if (cmd == "REV")    { REV(); Serial.println("Pin 12,13,A0,A1 HIGH"); }
     else if (cmd.startsWith("SPEED ")) {
       int newSpeed = cmd.substring(6).toInt();
-      // Motors don't actually work between [0,255], it's more like [100,255]. This is due to the motors not being able to interpret switches in voltage above a certain frequency. Will specify later. 
+      /* 
+      Motors don't actually work between [0,255], it's more like [150,255].
+      That's when all four motors move, although motor 4 moves slightly lower.
+      Can implement "kick" to get all motors started at sufficient speed then roll them down. 
+      Could also play with range so that it is actually within barrier of all motors moving and then take a percentage. 
+      */
       newSpeed = constrain(newSpeed, 0, 255); 
       currentSpeed = newSpeed;
       Serial.print("Speed set to "); Serial.println(currentSpeed);
