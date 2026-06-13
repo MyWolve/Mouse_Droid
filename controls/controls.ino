@@ -16,7 +16,7 @@ const int R_ENB = 10;  // L298N-R PWM (R3,R4)
 
 enum Direction { DIR_STOP, DIR_FWD, DIR_REV }; // Current state of droid
 // Begins motionless
-Direction currentDir = DIR_STOP;               
+Direction currentDir = DIR_STOP;
 int currentSpeed = 0;
 
 void setup() {
@@ -53,8 +53,8 @@ void setup() {
   analogWrite(F_ENB, currentSpeed);
   analogWrite(R_ENA, currentSpeed);
   analogWrite(R_ENB, currentSpeed);
-  
-  Serial.println("Ready. Commands: '2 HIGH', '2 LOW', '4 HIGH', '4 LOW', ... 'STOP'");
+
+  Serial.println("Ready. Commands: 'FWD', 'REV', 'STOP', 'SPEED <0-255>', or pin: 'F_IN1 HIGH', 'R_IN3 LOW', ...");
 }
 void loop() {
   if (Serial.available() > 0) {
@@ -62,25 +62,25 @@ void loop() {
     cmd.trim();
     cmd.toUpperCase();
     // Manual pin commands sidestep state setup, BE AWARE
-    if      (cmd == "2 HIGH") { digitalWrite(F_IN1, HIGH); Serial.println("Pin 2 HIGH");  }
-    else if (cmd == "2 LOW")  { digitalWrite(F_IN1, LOW);  Serial.println("Pin 2 LOW");   }
-    else if (cmd == "3 HIGH") { digitalWrite(F_IN2, HIGH); Serial.println("Pin 3 HIGH");  }
-    else if (cmd == "3 LOW")  { digitalWrite(F_IN2, LOW);  Serial.println("Pin 3 LOW");   }
-    else if (cmd == "4 HIGH") { digitalWrite(F_IN3, HIGH);  Serial.println("Pin 4 HIGH"); }
-    else if (cmd == "4 LOW")  { digitalWrite(F_IN3, LOW);  Serial.println("Pin 4 LOW");   }
-    else if (cmd == "5 HIGH") { digitalWrite(F_IN4, HIGH);  Serial.println("Pin 5 HIGH"); }
-    else if (cmd == "5 LOW")  { digitalWrite(F_IN4, LOW);  Serial.println("Pin 5 LOW");   }
-    else if (cmd == "8 HIGH") { digitalWrite(R_IN1, HIGH);  Serial.println("Pin 8 HIGH"); }
-    else if (cmd == "8 LOW")  { digitalWrite(R_IN1, LOW);  Serial.println("Pin 8 LOW");   }
-    else if (cmd == "9 HIGH") { digitalWrite(R_IN2, HIGH);  Serial.println("Pin 9 HIGH"); }
-    else if (cmd == "9 LOW")  { digitalWrite(R_IN2, LOW);  Serial.println("Pin 9 LOW");   }
-    else if (cmd == "10 HIGH"){ digitalWrite(R_IN3, HIGH);  Serial.println("Pin 10 HIGH");}
-    else if (cmd == "10 LOW") { digitalWrite(R_IN3, LOW);  Serial.println("Pin 10 LOW");  }
-    else if (cmd == "11 HIGH"){ digitalWrite(R_IN4, HIGH);  Serial.println("Pin 11 HIGH");}
-    else if (cmd == "11 LOW") { digitalWrite(R_IN4, LOW);  Serial.println("Pin 11 LOW");  }
-    
-    else if (cmd == "FWD")    { FWD(); Serial.println("Pin 2,4,8,10 HIGH"); }
-    else if (cmd == "REV")    { REV(); Serial.println("Pin 3,5,9,11 HIGH"); }
+    if      (cmd == "F_IN1 HIGH") { digitalWrite(F_IN1, HIGH); Serial.println("F_IN1 HIGH (pin 2)");  }
+    else if (cmd == "F_IN1 LOW")  { digitalWrite(F_IN1, LOW);  Serial.println("F_IN1 LOW (pin 2)");   }
+    else if (cmd == "F_IN2 HIGH") { digitalWrite(F_IN2, HIGH); Serial.println("F_IN2 HIGH (pin 4)");  }
+    else if (cmd == "F_IN2 LOW")  { digitalWrite(F_IN2, LOW);  Serial.println("F_IN2 LOW (pin 4)");   }
+    else if (cmd == "F_IN3 HIGH") { digitalWrite(F_IN3, HIGH); Serial.println("F_IN3 HIGH (pin 7)");  }
+    else if (cmd == "F_IN3 LOW")  { digitalWrite(F_IN3, LOW);  Serial.println("F_IN3 LOW (pin 7)");   }
+    else if (cmd == "F_IN4 HIGH") { digitalWrite(F_IN4, HIGH); Serial.println("F_IN4 HIGH (pin 8)");  }
+    else if (cmd == "F_IN4 LOW")  { digitalWrite(F_IN4, LOW);  Serial.println("F_IN4 LOW (pin 8)");   }
+    else if (cmd == "R_IN1 HIGH") { digitalWrite(R_IN1, HIGH); Serial.println("R_IN1 HIGH (pin 12)"); }
+    else if (cmd == "R_IN1 LOW")  { digitalWrite(R_IN1, LOW);  Serial.println("R_IN1 LOW (pin 12)");  }
+    else if (cmd == "R_IN2 HIGH") { digitalWrite(R_IN2, HIGH); Serial.println("R_IN2 HIGH (pin 13)"); }
+    else if (cmd == "R_IN2 LOW")  { digitalWrite(R_IN2, LOW);  Serial.println("R_IN2 LOW (pin 13)");  }
+    else if (cmd == "R_IN3 HIGH") { digitalWrite(R_IN3, HIGH); Serial.println("R_IN3 HIGH (pin A0)"); }
+    else if (cmd == "R_IN3 LOW")  { digitalWrite(R_IN3, LOW);  Serial.println("R_IN3 LOW (pin A0)");  }
+    else if (cmd == "R_IN4 HIGH") { digitalWrite(R_IN4, HIGH); Serial.println("R_IN4 HIGH (pin A1)"); }
+    else if (cmd == "R_IN4 LOW")  { digitalWrite(R_IN4, LOW);  Serial.println("R_IN4 LOW (pin A1)");  }
+
+    else if (cmd == "FWD")    { FWD(); Serial.println("F_IN1,F_IN4,R_IN1,R_IN3 HIGH"); }
+    else if (cmd == "REV")    { REV(); Serial.println("F_IN2,F_IN3,R_IN2,R_IN4 HIGH"); }
     else if (cmd.startsWith("SPEED ")) {
       int newSpeed = cmd.substring(6).toInt();
       newSpeed = constrain(newSpeed, 0, 255); // Motors don't actually work between [0,255], it's more like [100,255]. This is due to the motors not being able to interpret switches in voltage above a certain frequency
@@ -92,7 +92,7 @@ void loop() {
       STOP();
       Serial.println("ALL LOW (motor stopped)");
     }
-    else Serial.println("Unknown. Use: '2 HIGH', '2 LOW', '4 HIGH', '4 LOW', 'STOP'...");
+    else Serial.println("Unknown. Use: 'FWD', 'REV', 'STOP', 'SPEED <0-255>', or 'F_IN1 HIGH', 'R_IN3 LOW', ...");
   }
 }
 
@@ -109,7 +109,7 @@ void STOP(){
     digitalWrite(R_IN3, LOW);
     digitalWrite(R_IN4, LOW);
   }
-  
+
 
 void FWD(){
   if (currentDir == DIR_FWD) {
@@ -118,13 +118,7 @@ void FWD(){
   }
   if (currentDir == DIR_REV) {
     STOP();
-    delay(200);
-    // Set wheels to FWD
-    digitalWrite(F_IN1, HIGH);
-    digitalWrite(F_IN4, HIGH);
-    digitalWrite(R_IN1, HIGH);
-    digitalWrite(R_IN3, HIGH);
-    currentDir = DIR_FWD;
+    delay(20);
   }
   // Set wheels to FWD
   digitalWrite(F_IN1, HIGH);
@@ -141,13 +135,7 @@ void REV(){
   }
   if (currentDir == DIR_FWD) {
     STOP();
-    delay(200);
-    // Set wheels to REV
-    digitalWrite(F_IN2, HIGH);
-    digitalWrite(F_IN4, HIGH);
-    digitalWrite(R_IN2, HIGH);
-    digitalWrite(R_IN4, HIGH);
-    currentDir = DIR_REV;
+    delay(20);
   }
   // Set wheels to REV
   digitalWrite(F_IN2, HIGH);
